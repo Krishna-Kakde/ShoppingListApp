@@ -25,7 +25,7 @@ data class ShoppingItem (
     val id: Int,
     val name: String,
     val quantity: Int,
-    val isEditing: Boolean
+    val isEditing: Boolean = false
 )
 
 @Composable
@@ -63,15 +63,31 @@ fun ShoppingListApp (modifier: Modifier = Modifier ) {
         AlertDialog(
             onDismissRequest = {showDialog = false},
             confirmButton = {
-                Row() {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Button(
-                        onClick = {}
+                        onClick = {
+                            if (itemName.isNotEmpty()){
+                                val newItem = ShoppingItem(
+                                    id= sItem.size+1,
+                                    name= itemName,
+                                    quantity= itemQuantity.toInt(),
+                                )
+                                sItem = sItem + newItem
+                                showDialog = false
+                                itemName = ""
+                                itemQuantity = ""
+                            }
+                        }
                     ) {
                         Text("Add")
                     }
 
                     Button(
-                        onClick = {}
+                        onClick = {showDialog = false}
                     ) {
                         Text("Cancel")
                     }
