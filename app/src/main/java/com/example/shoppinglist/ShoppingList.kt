@@ -2,11 +2,15 @@ package com.example.shoppinglist
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +32,9 @@ data class ShoppingItem (
 fun ShoppingListApp (modifier: Modifier = Modifier ) {
 
     var sItem by remember { mutableStateOf(listOf<ShoppingItem>()) }
+    var showDialog by remember { mutableStateOf(false) }
+    var itemName by remember { mutableStateOf("") }
+    var itemQuantity by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -35,7 +42,7 @@ fun ShoppingListApp (modifier: Modifier = Modifier ) {
     )
     {
         Button(
-            onClick = {},
+            onClick = {showDialog = true},
             modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 50.dp)
         ) {
             Text("  Add  ")
@@ -50,5 +57,46 @@ fun ShoppingListApp (modifier: Modifier = Modifier ) {
 
             }
         }
+    }
+
+    if(showDialog){
+        AlertDialog(
+            onDismissRequest = {showDialog = false},
+            confirmButton = {
+                Row() {
+                    Button(
+                        onClick = {}
+                    ) {
+                        Text("Add")
+                    }
+
+                    Button(
+                        onClick = {}
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            },
+            title ={Text("Add Shopping Item")} ,
+            text = {
+                Column()
+                {
+                    OutlinedTextField(
+                        value = itemName,
+                        onValueChange = {itemName = it},
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth().padding(8.dp)
+                    )
+
+                    OutlinedTextField(
+                        value = itemQuantity,
+                        onValueChange = {itemQuantity = it},
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth().padding(8.dp)
+                    )
+
+                }
+            }
+        )
     }
 }
