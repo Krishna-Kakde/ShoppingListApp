@@ -37,9 +37,9 @@ import androidx.compose.ui.unit.dp
 
 data class ShoppingItem (
     val id: Int,
-    val name: String,
-    val quantity: Int,
-    val isEditing: Boolean = false
+    var name: String,
+    var quantity: Int,
+    var isEditing: Boolean = false
 )
 
 @Composable
@@ -68,7 +68,25 @@ fun ShoppingListApp (modifier: Modifier = Modifier ) {
             padding(16.dp)
         ) {
             items(sItem){
-
+                item ->
+                if(item.isEditing){
+                    ShoppingItemEditor(item = item, onEditComplete = {
+                        editedName,editedQuantity ->
+                        sItem = sItem.map{it.copy(isEditing = false)}
+                        val editedItem = sItem.find{it.id == item.id}
+                        editedItem?.let{
+                            it.name = editedName
+                            it.quantity = editedQuantity
+                        }
+                    })
+                }else{
+                    ShoppingListItem(item = item , OnEditClick = {
+                        sItem = sItem.map{it.copy(isEditing = it.id == item.id)}
+                    },
+                        OnDeleteClick = {
+                        sItem = sItem - item
+                    })
+                }
             }
         }
     }
@@ -88,7 +106,7 @@ fun ShoppingListApp (modifier: Modifier = Modifier ) {
                                 val newItem = ShoppingItem(
                                     id= sItem.size+1,
                                     name= itemName,
-                                    quantity= itemQuantity.toInt(),
+                                    quantity= itemQuantity.toIntOrNull() ?: 1,
                                 )
                                 sItem = sItem + newItem
                                 showDialog = false
@@ -139,7 +157,8 @@ fun ShoppingListItem(
 ){
     Row(modifier = Modifier.fillMaxWidth().padding(8.dp).border(
         border = BorderStroke(2.dp,Color.Cyan),
-        shape = RoundedCornerShape(20))
+        shape = RoundedCornerShape(20)),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(text = item.name, modifier = Modifier.padding(8.dp))
         Text(text = "Qty: ${item.quantity}", modifier = Modifier.padding(8.dp))
